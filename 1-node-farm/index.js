@@ -76,14 +76,64 @@ We created our server using create server n passsed in callback function that is
 /* 
 We use another built-in module i.e URL 
 */
+
+/* const server = http.createServer((req, res) => {
+    // console.log(req.url);
+    const pathName = req.url;
+
+    if (pathName === '/' || pathName === '/overview') {
+        res.end('This is the OVERVIEW');
+    } else if (pathName === '/product') {
+        res.end('This is the PRODUCT');
+    } else if (pathName === '/api') {
+        res.end('API');
+    }else {
+        res.writeHead(404, {
+            'Content-type': 'text/html',
+            'my-own-header': 'hello-world'
+        });
+        res.end('<h1>Page not found!</h1>');
+        // res.end('Page not found!');
+    }
+    // res.end('Hello from the server!');
+}); */
+
+/* 
+An HTTP header is basically a piece of information about the response that we are sending back. 
+These routes that we defined in our code and the routes that we put in the URLs in the browser have nothing to do with the files and folders in our project file system.
+*/
+
+/* server.listen(8000,'127.0.0.1', () => {
+    console.log('Listening to request on port 8000');
+}) */
+
+/////////////////////////////////////////////////////////////////////////////////////
+// BULDING A VERY SIMPLE API
+/* 
+An API is a service from which we can request some data.
+JSON format look likes js code 
+We want to read the data from the JSON file, then parse json into javascript and then send back that result to the client.
+*/
+
 const server = http.createServer((req, res) => {
     // console.log(req.url);
     const pathName = req.url;
 
-    if(pathName === '/' || pathName === '/overview') {
+    if (pathName === '/' || pathName === '/overview') {
         res.end('This is the OVERVIEW');
     } else if (pathName === '/product') {
         res.end('This is the PRODUCT');
+    } else if (pathName === '/api') {
+
+        // reading file
+        fs.readFile(`${__dirname}/dev-data/data.json`,'utf-8',(err,data) => {
+            const productData = JSON.parse(data);
+            // console.log(productData);
+            res.writeHead(200, {'Content-type': 'application/json'});
+            res.end(data);
+        });
+
+        // res.end('API');
     } else {
         res.writeHead(404, {
             'Content-type': 'text/html',
@@ -96,7 +146,7 @@ const server = http.createServer((req, res) => {
 });
 
 /* 
-An HTTP header is basically a piece of information about the response that we are sending back. 
+This is not perfect, each time someone hits /api route, the file have to be read and then sent back. Instead what we can do is to just read the file once in the beginning and each time someone hits this route simply sent back the data without having to read it each time. 
 */
 
 server.listen(8000,'127.0.0.1', () => {
