@@ -115,6 +115,15 @@ JSON format look likes js code
 We want to read the data from the JSON file, then parse json into javascript and then send back that result to the client.
 */
 
+
+// Using Sync version
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`,'utf-8');
+const dataObj = JSON.parse(data);
+
+/* 
+As this is top level code so it will be only executed once we no need to worry about Sync version code-blocking problem.
+*/
+
 const server = http.createServer((req, res) => {
     // console.log(req.url);
     const pathName = req.url;
@@ -124,15 +133,8 @@ const server = http.createServer((req, res) => {
     } else if (pathName === '/product') {
         res.end('This is the PRODUCT');
     } else if (pathName === '/api') {
-
-        // reading file
-        fs.readFile(`${__dirname}/dev-data/data.json`,'utf-8',(err,data) => {
-            const productData = JSON.parse(data);
-            // console.log(productData);
-            res.writeHead(200, {'Content-type': 'application/json'});
-            res.end(data);
-        });
-
+        res.writeHead(200, {'Content-type': 'application/json'});
+        res.end(data);
         // res.end('API');
     } else {
         res.writeHead(404, {
